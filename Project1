@@ -22,13 +22,7 @@ int main( int argc, char **argv)
       for(j=0; j<100; j++){
         data[i][j] = generate_data(i,j) ;
       }
-      if(i == 24){
-        mtag = 1 ;
-        MPI_Isend(data, 2500, MPI_INT, 1, mtag, MPI_COMM_WORLD, &req_s) ;
-      }
-    }
-    mtag = 3 ;
-    MPI_Isend(data[25], 2500, MPI_INT, 1, mtag, MPI_COMM_WORLD, &req_r) ;
+      
 
     for(i=50; i<100; i++)
       for(j=0; j<100; j++)
@@ -51,18 +45,11 @@ int main( int argc, char **argv)
     
   }
   else { /*** pid == 1 ***/
-    mtag = 1 ;
-    MPI_Recv(data, 2500, MPI_INT, 0, mtag, MPI_COMM_WORLD, &status) ;
-    mtag = 3 ;
-    MPI_Irecv(data[25], 2500, MPI_INT, 0, mtag, MPI_COMM_WORLD, &req_r) ;
-
+   
     for(i=0; i<50; i++) {
       row_sum[i] = 0 ;
       for(j=0; j<100; j++)
          row_sum[i] += data[i][j] ;
-      if(i == 24)
-        MPI_Wait(&req_r, &status_r);
-    }
 
 
    /*** Send computed row_sums to pid 0 ***/
